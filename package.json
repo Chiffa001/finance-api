@@ -3,12 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "build": "tsc",
-    "build:watch": "tsc -w",
-    "start": "node ./dist/index.js",
-    "start:dev": "nodemon ./dist/index.js"
+    "start": "yarn ts-node -r tsconfig-paths/register ./src/main.ts",
+    "start:dev": "yarn nodemon -r tsconfig-paths/register ./src/main.ts"
   },
   "repository": {
     "type": "git",
@@ -30,9 +27,12 @@
     "eslint-plugin-n": "^15.0.0",
     "eslint-plugin-promise": "^6.0.0",
     "nodemon": "^2.0.20",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.1.2",
     "typescript": "*"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "winston": "^3.8.2"
   }
 }
