@@ -1,6 +1,10 @@
+import { injectable } from 'inversify';
 import winston, { Logger as WinstonLogger, format as winstonFormat } from 'winston';
-import { Logger } from '~/types/logger';
 
+import { Logger } from '~/types/logger';
+import 'reflect-metadata';
+
+@injectable()
 export class LoggerService implements Logger {
   private readonly logger: WinstonLogger;
 

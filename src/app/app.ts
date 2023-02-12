@@ -1,22 +1,29 @@
 import { Server } from 'http';
+
 import express, { Express } from 'express';
+import { inject, injectable } from 'inversify';
+
+import { AccountController } from '~/account';
+import { Modules } from '~/modules';
 import { Logger } from '~/types/logger';
 import { RouteBasePath } from '~/types/route';
-import { AccountController } from '~/account';
+import 'reflect-metadata';
 
+@injectable()
 export class App {
   private static readonly port = process.env.PORT ?? 3000;
   private readonly app: Express;
   private server: Server;
-  private readonly logger: Logger;
 
-  constructor (logger: Logger) {
+  constructor (
+    @inject(Modules.Logger) private readonly logger: Logger,
+    @inject(Modules.AccountController) private readonly accountController: AccountController
+  ) {
     this.app = express();
-    this.logger = logger;
   }
 
   useRoutes () {
-    this.app.use(RouteBasePath.ACCOUNT, (new AccountController(this.logger)).router);
+    this.app.use(RouteBasePath.ACCOUNT, this.accountController.router);
   }
 
   public async init () {
