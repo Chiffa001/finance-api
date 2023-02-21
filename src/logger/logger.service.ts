@@ -1,7 +1,9 @@
+import { Request } from 'express';
 import { injectable } from 'inversify';
 import winston, { Logger as WinstonLogger, format as winstonFormat } from 'winston';
 
 import { Logger } from '~/types/logger';
+
 import 'reflect-metadata';
 
 @injectable()
@@ -31,5 +33,17 @@ export class LoggerService implements Logger {
 
   error = (message: string) => {
     this.logger.error(message);
+  };
+
+  getRequestInfo = (request: Request) => `${request.baseUrl}${request.url} [${request.method}]`;
+
+  requestInfo = (request: Request, requestData: unknown) => {
+    const requestInfo = this.getRequestInfo(request);
+    this.logger.info(`REQUEST ${requestInfo}: ${JSON.stringify({ request: requestData })}`);
+  };
+
+  responseInfo = (request: Request, responseData: unknown) => {
+    const requestInfo = this.getRequestInfo(request);
+    this.logger.info(`RESPONSE ${requestInfo}: ${JSON.stringify({ response: responseData })}`);
   };
 }
