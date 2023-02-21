@@ -23,9 +23,12 @@ export abstract class BaseController {
   abstract getRoutes (): Route[];
 
   bindRoutes () {
-    this.getRoutes().forEach(({ method, path, cb }) => {
+    this.getRoutes().forEach(({ method, path, cb, middleware }) => {
       this.logger.info(`${path} [${method}]: registered`);
-      this._router[method](path, cb);
+      const pipeline = Array.isArray(middleware)
+        ? [...middleware.map(m => m.execute), cb]
+        : cb;
+      this._router[method](path, pipeline);
     });
   }
 }
