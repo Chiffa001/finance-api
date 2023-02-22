@@ -6,6 +6,7 @@ import { inject, injectable } from 'inversify';
 
 import { AccountController } from '~/account';
 import { ClientError } from '~/client-error';
+import { PrismaService } from '~/database';
 import { Modules } from '~/modules';
 import { Logger } from '~/types/logger';
 import { RouteBasePath } from '~/types/route';
@@ -20,7 +21,8 @@ export class App {
   constructor (
     @inject(Modules.Logger) private readonly logger: Logger,
     @inject(Modules.AccountController) private readonly accountController: AccountController,
-    @inject(Modules.ClientError) private readonly clientError: ClientError
+    @inject(Modules.ClientError) private readonly clientError: ClientError,
+    @inject(Modules.PrismaService) private readonly prismaService: PrismaService
   ) {
     this.app = express();
   }
@@ -41,6 +43,8 @@ export class App {
     this.useMiddleware();
     this.useRoutes();
     this.useErrorHandler();
+
+    await this.prismaService.connect();
 
     this.server = this.app.listen(App.port, () => {
       this.logger.info(`server is running on port ${App.port}`);
