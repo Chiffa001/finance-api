@@ -3,5 +3,6 @@ export const Modules = {
   AccountController: Symbol.for('AccountController'),
   AccountService: Symbol.for('AccountService'),
   App: Symbol.for('App'),
-  ClientError: Symbol.for('ClientServer')
+  ClientError: Symbol.for('ClientServer'),
+  ConfigService: Symbol.for('ConfigService')
 };
