@@ -4,9 +4,10 @@ import { Middleware } from './middlware';
 
 export enum RouteBasePath {
   ACCOUNT = '/account',
+  USERS = '/users',
 }
 
-export type ControllerHandler = (req: Request, res: Response) => void;
+export type ControllerHandler = (req: Request, res: Response) => Promise<void> | void;
 
 export interface Route {
   path: string

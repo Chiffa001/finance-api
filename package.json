@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Chiffa001/finance-api#readme",
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/express": "^4.17.15",
     "@types/jest": "^29.4.0",
     "@typescript-eslint/eslint-plugin": "^5.0.0",

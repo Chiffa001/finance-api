@@ -32,4 +32,8 @@ export class PrismaService {
       throw e;
     }
   }
+
+  get client () {
+    return this._client;
+  }
 }

@@ -16,6 +16,8 @@ enum RoutePath {
   SET_INITIAL_SUM = '/setSum'
 }
 
+const MODULE_NAME = 'AccountController';
+
 @injectable()
 export class AccountController extends BaseController {
   constructor (
@@ -26,19 +28,19 @@ export class AccountController extends BaseController {
 
   getInfo: ControllerHandler = (req, res) => {
     const info = this.accountService.getInfo();
-    this.loggerService.requestInfo(req, req.params);
+    this.loggerService.requestInfo(req, req.params, MODULE_NAME);
     const response = { info };
     res.json(response);
-    this.loggerService.responseInfo(req, response);
+    this.loggerService.responseInfo(req, response, MODULE_NAME);
   };
 
   setInitialAccountSum: ControllerHandler = (req, res) => {
     const { sum } = req.body as SetInitialSumDto;
-    this.loggerService.requestInfo(req, sum);
+    this.loggerService.requestInfo(req, sum, MODULE_NAME);
 
     const response = { sum };
     res.json(response);
-    this.loggerService.responseInfo(req, response);
+    this.loggerService.responseInfo(req, response, MODULE_NAME);
   };
 
   getRoutes (): Route[] {
