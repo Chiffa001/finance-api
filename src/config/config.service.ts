@@ -20,7 +20,7 @@ export class ConfigService implements Config {
     }
 
     this.logger.info('Config успешно прочитан');
-    this._config = conf as DotenvParseOutput;
+    this._config = conf.parsed as DotenvParseOutput;
   }
 
   get = (key: string) => this._config[key];

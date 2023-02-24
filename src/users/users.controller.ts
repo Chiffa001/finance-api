@@ -1,0 +1,47 @@
+import { inject, injectable } from 'inversify';
+
+import { RegisterUserDto } from './dto/register-user.dto';
+import { UsersService } from './users.service';
+
+import { BaseController } from '~/common/base-controller';
+import { ValidateMiddleware } from '~/common/validate.middleware';
+import { Modules } from '~/modules';
+import { Logger } from '~/types/logger';
+import { ControllerHandler, Route } from '~/types/route';
+
+import 'reflect-metadata';
+
+enum RoutePath {
+  REGISTER = '/register'
+}
+
+const MODULE_NAME = 'UsersController';
+
+@injectable()
+export class UsersController extends BaseController {
+  constructor (
+    @inject(Modules.Logger) private readonly loggerService: Logger,
+    @inject(Modules.UsersService) private readonly usersService: UsersService
+  ) {
+    super(loggerService);
+  }
+
+  register: ControllerHandler = async (req, res) => {
+    this.loggerService.requestInfo(req, req.body, MODULE_NAME);
+    const dto = req.body as RegisterUserDto;
+    const registeredUser = await this.usersService.register(dto);
+    const response = {
+      id: registeredUser.id,
+      email: registeredUser.email,
+      name: registeredUser.name
+    };
+    res.status(201).json({ response });
+    this.loggerService.responseInfo(req, response, MODULE_NAME);
+  };
+
+  getRoutes (): Route[] {
+    return [
+      { method: 'post', path: RoutePath.REGISTER, cb: this.register, middleware: [new ValidateMiddleware(RegisterUserDto)] }
+    ];
+  }
+}

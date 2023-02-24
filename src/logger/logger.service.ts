@@ -37,13 +37,13 @@ export class LoggerService implements Logger {
 
   getRequestInfo = (request: Request) => `${request.baseUrl}${request.url} [${request.method}]`;
 
-  requestInfo = (request: Request, requestData: unknown) => {
+  requestInfo = (request: Request, requestData: unknown, moduleName: string) => {
     const requestInfo = this.getRequestInfo(request);
-    this.logger.info(`REQUEST ${requestInfo}: ${JSON.stringify({ request: requestData })}`);
+    this.logger.info(`REQUEST [${moduleName}] ${requestInfo}: ${JSON.stringify({ request: requestData })}`);
   };
 
-  responseInfo = (request: Request, responseData: unknown) => {
+  responseInfo = (request: Request, responseData: unknown, moduleName: string) => {
     const requestInfo = this.getRequestInfo(request);
-    this.logger.info(`RESPONSE ${requestInfo}: ${JSON.stringify({ response: responseData })}`);
+    this.logger.info(`RESPONSE [${moduleName}] ${requestInfo}: ${JSON.stringify({ response: responseData })}`);
   };
 }

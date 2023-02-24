@@ -5,5 +5,7 @@ export const Modules = {
   App: Symbol.for('App'),
   ClientError: Symbol.for('ClientServer'),
   ConfigService: Symbol.for('ConfigService'),
-  PrismaService: Symbol.for('PrismaService')
+  PrismaService: Symbol.for('PrismaService'),
+  UsersService: Symbol.for('UsersService'),
+  UsersController: Symbol.for('UsersController')
 };

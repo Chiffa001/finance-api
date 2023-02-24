@@ -10,6 +10,7 @@ import { PrismaService } from '~/database';
 import { Modules } from '~/modules';
 import { Logger } from '~/types/logger';
 import { RouteBasePath } from '~/types/route';
+import { UsersController } from '~/users';
 import 'reflect-metadata';
 
 @injectable()
@@ -22,7 +23,8 @@ export class App {
     @inject(Modules.Logger) private readonly logger: Logger,
     @inject(Modules.AccountController) private readonly accountController: AccountController,
     @inject(Modules.ClientError) private readonly clientError: ClientError,
-    @inject(Modules.PrismaService) private readonly prismaService: PrismaService
+    @inject(Modules.PrismaService) private readonly prismaService: PrismaService,
+    @inject(Modules.UsersController) private readonly usersController: UsersController
   ) {
     this.app = express();
   }
@@ -33,6 +35,7 @@ export class App {
 
   useRoutes () {
     this.app.use(RouteBasePath.ACCOUNT, this.accountController.router);
+    this.app.use(RouteBasePath.USERS, this.usersController.router);
   }
 
   useMiddleware () {
