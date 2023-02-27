@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 
-import { Middleware } from './middlware';
+import { Middleware } from './middleware';
 
 export enum RouteBasePath {
   ACCOUNT = '/account',

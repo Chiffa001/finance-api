@@ -6,6 +6,8 @@ import { inject, injectable } from 'inversify';
 
 import { AccountController } from '~/account';
 import { ClientError } from '~/client-error';
+import { AuthMiddleware } from '~/common/auth.middleware';
+import { ConfigService } from '~/config';
 import { PrismaService } from '~/database';
 import { Modules } from '~/modules';
 import { Logger } from '~/types/logger';
@@ -24,7 +26,8 @@ export class App {
     @inject(Modules.AccountController) private readonly accountController: AccountController,
     @inject(Modules.ClientError) private readonly clientError: ClientError,
     @inject(Modules.PrismaService) private readonly prismaService: PrismaService,
-    @inject(Modules.UsersController) private readonly usersController: UsersController
+    @inject(Modules.UsersController) private readonly usersController: UsersController,
+    @inject(Modules.ConfigService) private readonly configService: ConfigService
   ) {
     this.app = express();
   }
@@ -40,6 +43,7 @@ export class App {
 
   useMiddleware () {
     this.app.use(json());
+    this.app.use((new AuthMiddleware(this.configService.get('SECRET'))).execute);
   }
 
   public async init () {

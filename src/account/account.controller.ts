@@ -3,6 +3,7 @@ import { inject, injectable } from 'inversify';
 import { AccountService } from './account.service';
 import { SetInitialSumDto } from './dto/set-initial-sum.dto';
 
+import { AuthGuard } from '~/auth';
 import { BaseController } from '~/common/base-controller';
 import { ValidateMiddleware } from '~/common/validate.middleware';
 import { Modules } from '~/modules';
@@ -22,7 +23,8 @@ const MODULE_NAME = 'AccountController';
 export class AccountController extends BaseController {
   constructor (
     @inject(Modules.Logger) private readonly loggerService: Logger,
-    @inject(Modules.AccountService) private readonly accountService: AccountService) {
+    @inject(Modules.AccountService) private readonly accountService: AccountService,
+    @inject(Modules.AuthGuard) private readonly authGuard: AuthGuard) {
     super(loggerService);
   }
 
@@ -46,7 +48,7 @@ export class AccountController extends BaseController {
   getRoutes (): Route[] {
     return [
       { method: 'get', path: RoutePath.INFO, cb: this.getInfo },
-      { method: 'post', path: RoutePath.SET_INITIAL_SUM, cb: this.setInitialAccountSum, middleware: [new ValidateMiddleware(SetInitialSumDto)] }
+      { method: 'post', path: RoutePath.SET_INITIAL_SUM, cb: this.setInitialAccountSum, middleware: [new ValidateMiddleware(SetInitialSumDto), this.authGuard] }
     ];
   }
 }

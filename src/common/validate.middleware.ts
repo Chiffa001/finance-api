@@ -2,7 +2,7 @@ import { ClassConstructor, plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
 import { Request, Response, NextFunction } from 'express';
 
-import { Middleware } from '~/types/middlware';
+import { Middleware } from '~/types/middleware';
 import { isArrayWithItems } from '~/utils/array';
 
 export class ValidateMiddleware implements Middleware {
