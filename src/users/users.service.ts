@@ -1,6 +1,9 @@
 import { UserModel } from '@prisma/client';
+import { compare } from 'bcryptjs';
 import { inject, injectable } from 'inversify';
+import { sign } from 'jsonwebtoken';
 
+import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UserEntity } from './user.entity';
 
@@ -34,5 +37,29 @@ export class UsersService implements User {
     return await this.prismaService.client.userModel.create({
       data: candidate
     });
+  };
+
+  login = async ({ email, password }: LoginUserDto) => {
+    const user = await this.prismaService.client.userModel.findFirst({
+      where: {
+        email
+      }
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    const isPasswordVerified = await compare(password, user.password);
+
+    if (!isPasswordVerified) {
+      return null;
+    }
+
+    const token = sign({ email, id: user.id, iat: Math.floor(Date.now() / 1000) - 30 }, this.configService.get('SECRET'));
+
+    this.logger.info(`[UsersService] login: ${JSON.stringify({ email, token })}`);
+
+    return { token };
   };
 }

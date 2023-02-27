@@ -11,8 +11,55 @@ datasource db {
 }
 
 model UserModel {
-  id       Int    @id @default(autoincrement())
-  email    String
-  password String
-  name     String
+  id         Int             @id @default(autoincrement())
+  email      String          @unique
+  password   String
+  name       String
+  role       Role            @default(USER)
+  accounts   AccountModel[]
+  categories CategoryModel[]
+}
+
+model AccountModel {
+  id             Int              @id @default(autoincrement())
+  name           String
+  currency       String
+  UserModel      UserModel?       @relation(fields: [userModelId], references: [id])
+  userModelId    Int?
+  OperationModel OperationModel[]
+}
+
+model CategoryModel {
+  id          Int        @id @default(autoincrement())
+  name        String
+  UserModel   UserModel? @relation(fields: [userModelId], references: [id])
+  userModelId Int?
+}
+
+model OperationModel {
+  id             Int           @id @default(autoincrement())
+  balance        Float
+  sum            Float
+  createdAt      DateTime      @default(now())
+  account        AccountModel  @relation(fields: [accountModelId], references: [id])
+  accountModelId Int
+  type           OperationType @default(EXPENSE)
+  comment        CommentModel  @relation(fields: [commentModelId], references: [id])
+  commentModelId Int
+}
+
+model CommentModel {
+  id             Int              @id @default(autoincrement())
+  text           String
+  OperationModel OperationModel[]
+}
+
+enum OperationType {
+  INCOME
+  EXPENSE
+}
+
+enum Role {
+  ADMIN
+  USER
 }

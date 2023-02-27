@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
 
+import { LoginUserDto } from './dto/login-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UsersService } from './users.service';
 
@@ -12,7 +13,8 @@ import { ControllerHandler, Route } from '~/types/route';
 import 'reflect-metadata';
 
 enum RoutePath {
-  REGISTER = '/register'
+  REGISTER = '/register',
+  LOGIN = '/login'
 }
 
 const MODULE_NAME = 'UsersController';
@@ -39,9 +41,24 @@ export class UsersController extends BaseController {
     this.loggerService.responseInfo(req, response, MODULE_NAME);
   };
 
+  login: ControllerHandler = async (req, res) => {
+    this.loggerService.requestInfo(req, req.body, MODULE_NAME);
+    const dto = req.body as LoginUserDto;
+    const response = await this.usersService.login(dto);
+
+    if (!response) {
+      res.status(404).json({ error: 'Такого пользователя не существует' });
+
+      return;
+    }
+
+    res.status(200).json(response);
+  };
+
   getRoutes (): Route[] {
     return [
-      { method: 'post', path: RoutePath.REGISTER, cb: this.register, middleware: [new ValidateMiddleware(RegisterUserDto)] }
+      { method: 'post', path: RoutePath.REGISTER, cb: this.register, middleware: [new ValidateMiddleware(RegisterUserDto)] },
+      { method: 'post', path: RoutePath.LOGIN, cb: this.login, middleware: [new ValidateMiddleware(LoginUserDto)] }
     ];
   }
 }
