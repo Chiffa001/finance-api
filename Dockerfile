@@ -8,4 +8,6 @@ RUN yarn install
 
 COPY . .
 
+RUN yarn run generate
+
 CMD ["yarn", "run", "start:dev"]

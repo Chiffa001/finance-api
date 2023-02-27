@@ -10,7 +10,8 @@
     "test": "yarn jest",
     "start": "yarn ts-node -r tsconfig-paths/register --files ./src/main.ts",
     "start:dev": "yarn nodemon -r tsconfig-paths/register --files ./src/main.ts",
-    "generate": "prisma generate"
+    "generate": "prisma generate",
+    "push": "prisma db push"
   },
   "repository": {
     "type": "git",
