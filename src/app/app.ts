@@ -17,7 +17,6 @@ import 'reflect-metadata';
 
 @injectable()
 export class App {
-  private static readonly port = process.env.PORT ?? 3000;
   private readonly app: Express;
   private server: Server;
 
@@ -53,8 +52,10 @@ export class App {
 
     await this.prismaService.connect();
 
-    this.server = this.app.listen(App.port, () => {
-      this.logger.info(`server is running on port ${App.port}`);
+    const port = this.configService.get('PORT');
+
+    this.server = this.app.listen(port, () => {
+      this.logger.info(`server is running on port ${port}`);
     });
   }
 }

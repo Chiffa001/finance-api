@@ -9,5 +9,25 @@ services:
       - /app/node_modules
     ports:
       - 3000:3000
+      - 5555:5555
     restart: always
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+  postgres:
+    container_name: prostgres
+    image: postgres:15
+    env_file:
+      - .env
+    environment:
+      PG_DATA: /var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  pgdata:
     
