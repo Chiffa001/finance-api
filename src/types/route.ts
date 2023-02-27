@@ -1,12 +1,13 @@
 import { Router, Request, Response } from 'express';
 
-import { Middleware } from './middlware';
+import { Middleware } from './middleware';
 
 export enum RouteBasePath {
   ACCOUNT = '/account',
+  USERS = '/users',
 }
 
-export type ControllerHandler = (req: Request, res: Response) => void;
+export type ControllerHandler = (req: Request, res: Response) => Promise<void> | void;
 
 export interface Route {
   path: string
