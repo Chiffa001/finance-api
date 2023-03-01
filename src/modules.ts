@@ -8,5 +8,7 @@ export const Modules = {
   PrismaService: Symbol.for('PrismaService'),
   UsersService: Symbol.for('UsersService'),
   UsersController: Symbol.for('UsersController'),
-  AuthGuard: Symbol.for('AuthGuard')
+  AuthGuard: Symbol.for('AuthGuard'),
+  CategoriesService: Symbol.for('CategoriesService'),
+  CategoriesController: Symbol.for('CategoriesController')
 };
