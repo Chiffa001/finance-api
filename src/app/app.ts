@@ -5,6 +5,7 @@ import express, { Express } from 'express';
 import { inject, injectable } from 'inversify';
 
 import { AccountController } from '~/account';
+import { CategoriesController } from '~/categories';
 import { ClientError } from '~/client-error';
 import { AuthMiddleware } from '~/common/auth.middleware';
 import { ConfigService } from '~/config';
@@ -26,7 +27,8 @@ export class App {
     @inject(Modules.ClientError) private readonly clientError: ClientError,
     @inject(Modules.PrismaService) private readonly prismaService: PrismaService,
     @inject(Modules.UsersController) private readonly usersController: UsersController,
-    @inject(Modules.ConfigService) private readonly configService: ConfigService
+    @inject(Modules.ConfigService) private readonly configService: ConfigService,
+    @inject(Modules.CategoriesController) private readonly categoriesController: CategoriesController
   ) {
     this.app = express();
   }
@@ -38,6 +40,7 @@ export class App {
   useRoutes () {
     this.app.use(RouteBasePath.ACCOUNT, this.accountController.router);
     this.app.use(RouteBasePath.USERS, this.usersController.router);
+    this.app.use(RouteBasePath.CATEGORY, this.categoriesController.router);
   }
 
   useMiddleware () {

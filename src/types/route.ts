@@ -5,6 +5,7 @@ import { Middleware } from './middleware';
 export enum RouteBasePath {
   ACCOUNT = '/account',
   USERS = '/users',
+  CATEGORY = '/category',
 }
 
 export type ControllerHandler = (req: Request, res: Response) => Promise<void> | void;
