@@ -17,10 +17,9 @@ enum RoutePath {
   LOGIN = '/login'
 }
 
-const MODULE_NAME = 'UsersController';
-
 @injectable()
 export class UsersController extends BaseController {
+  readonly moduleName = 'UsersController';
   constructor (
     @inject(Modules.Logger) private readonly loggerService: Logger,
     @inject(Modules.UsersService) private readonly usersService: UsersService
@@ -29,7 +28,7 @@ export class UsersController extends BaseController {
   }
 
   register: ControllerHandler = async (req, res) => {
-    this.loggerService.requestInfo(req, req.body, MODULE_NAME);
+    this.loggerService.requestInfo(req, req.body, this.moduleName);
     const dto = req.body as RegisterUserDto;
     const registeredUser = await this.usersService.register(dto);
     const response = {
@@ -38,11 +37,11 @@ export class UsersController extends BaseController {
       name: registeredUser.name
     };
     res.status(201).json({ response });
-    this.loggerService.responseInfo(req, response, MODULE_NAME);
+    this.loggerService.responseInfo(req, response, this.moduleName);
   };
 
   login: ControllerHandler = async (req, res) => {
-    this.loggerService.requestInfo(req, req.body, MODULE_NAME);
+    this.loggerService.requestInfo(req, req.body, this.moduleName);
     const dto = req.body as LoginUserDto;
     const response = await this.usersService.login(dto);
 

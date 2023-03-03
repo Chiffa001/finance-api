@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 
 import { AccountService } from './account.service';
-import { SetInitialSumDto } from './dto/set-initial-sum.dto';
+import { CreateAccountDto } from './dto/create-account.dto';
 
 import { AuthGuard } from '~/auth';
 import { BaseController } from '~/common/base-controller';
@@ -14,13 +14,13 @@ import 'reflect-metadata';
 
 enum RoutePath {
   INFO = '/accountInfo',
-  SET_INITIAL_SUM = '/setSum'
+  GET_ALL_ACCOUNTS = '/getAllAccounts',
+  CREATE_ACCOUNT = '/createAccount'
 }
-
-const MODULE_NAME = 'AccountController';
 
 @injectable()
 export class AccountController extends BaseController {
+  readonly moduleName = 'AccountController';
   constructor (
     @inject(Modules.Logger) private readonly loggerService: Logger,
     @inject(Modules.AccountService) private readonly accountService: AccountService,
@@ -30,25 +30,35 @@ export class AccountController extends BaseController {
 
   getInfo: ControllerHandler = (req, res) => {
     const info = this.accountService.getInfo();
-    this.loggerService.requestInfo(req, req.params, MODULE_NAME);
+    this.loggerService.requestInfo(req, req.params, this.moduleName);
     const response = { info };
     res.json(response);
-    this.loggerService.responseInfo(req, response, MODULE_NAME);
+    this.loggerService.responseInfo(req, response, this.moduleName);
   };
 
-  setInitialAccountSum: ControllerHandler = (req, res) => {
-    const { sum } = req.body as SetInitialSumDto;
-    this.loggerService.requestInfo(req, sum, MODULE_NAME);
-
-    const response = { sum };
+  getAllAccounts: ControllerHandler = async (req, res) => {
+    const { user } = req;
+    this.loggerService.requestInfo(req, user, this.moduleName);
+    const accountList = await this.accountService.getAllAccounts(user.id);
+    const response = { accountList, user };
     res.json(response);
-    this.loggerService.responseInfo(req, response, MODULE_NAME);
+    this.loggerService.responseInfo(req, response, this.moduleName);
+  };
+
+  createAccount: ControllerHandler = async (req, res) => {
+    const { user, body } = req;
+    this.loggerService.requestInfo(req, { user, body }, this.moduleName);
+    const account = await this.accountService.createAccount(user.id, body as CreateAccountDto);
+    const response = { user, account };
+    res.status(201).json(response);
+    this.loggerService.responseInfo(req, response, this.moduleName);
   };
 
   getRoutes (): Route[] {
     return [
       { method: 'get', path: RoutePath.INFO, cb: this.getInfo },
-      { method: 'post', path: RoutePath.SET_INITIAL_SUM, cb: this.setInitialAccountSum, middleware: [new ValidateMiddleware(SetInitialSumDto), this.authGuard] }
+      { method: 'get', path: RoutePath.GET_ALL_ACCOUNTS, cb: this.getAllAccounts, middleware: [this.authGuard] },
+      { method: 'post', path: RoutePath.CREATE_ACCOUNT, cb: this.createAccount, middleware: [new ValidateMiddleware(CreateAccountDto), this.authGuard] }
     ];
   }
 }

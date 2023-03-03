@@ -1,8 +1,10 @@
 import { inject, injectable } from 'inversify';
 
-import 'reflect-metadata';
+import { CreateAccountDto } from './dto/create-account.dto';
+
 import { PrismaService } from '~/database';
 import { Modules } from '~/modules';
+import 'reflect-metadata';
 
 @injectable()
 export class AccountService {
@@ -15,6 +17,16 @@ export class AccountService {
     return this.prismaService.client.accountModel.findMany({
       where: {
         userModelId: userId
+      }
+    });
+  }
+
+  async createAccount (userId: number, { name, currency }: CreateAccountDto) {
+    return this.prismaService.client.accountModel.create({
+      data: {
+        userModelId: userId,
+        name,
+        currency
       }
     });
   }

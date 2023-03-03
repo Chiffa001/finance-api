@@ -10,7 +10,7 @@ export class ClientError {
   constructor (@inject(Modules.Logger) private readonly logger: Logger) {}
 
   handler = (err: Error, req: Request, res: Response, next: NextFunction) => {
-    this.logger.responseInfo(req, err.message, 'ClientError');
+    this.logger.errorResponseInfo(req, err.message, 'ClientError');
     res.status(500).json({ error: 'Unexpected error' });
   };
 }

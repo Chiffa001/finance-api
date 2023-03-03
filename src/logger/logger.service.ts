@@ -46,4 +46,9 @@ export class LoggerService implements Logger {
     const requestInfo = this.getRequestInfo(request);
     this.logger.info(`RESPONSE [${moduleName}] ${requestInfo}: ${JSON.stringify({ response: responseData })}`);
   };
+
+  errorResponseInfo = (request: Request, responseData: unknown, moduleName: string) => {
+    const requestInfo = this.getRequestInfo(request);
+    this.logger.error(`RESPONSE [${moduleName}] ${requestInfo}: ${JSON.stringify({ response: responseData })}`);
+  };
 }
