@@ -13,4 +13,6 @@ export class AddOperationDto {
     accountId: number;
 
   operationType?: OperationType;
+
+  text?: string;
 }
