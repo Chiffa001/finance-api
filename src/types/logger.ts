@@ -7,4 +7,5 @@ export interface Logger {
   requestInfo: (request: Request, requestData: unknown, moduleName: string) => void
   responseInfo: (request: Request, responseData: unknown, moduleName: string) => void
   getRequestInfo: (req: Request) => string
+  errorResponseInfo: (request: Request, responseData: unknown, moduleName: string) => void
 }

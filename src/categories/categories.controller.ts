@@ -15,30 +15,29 @@ enum RoutePath {
   GET_ALL = '/getAll'
 }
 
-const MODULE_NAME = 'CategoriesController';
-
 @injectable()
 export class CategoriesController extends BaseController {
+  readonly moduleName = 'CategoriesController';
   constructor (@inject(Modules.CategoriesService) private readonly categoriesService: CategoriesService, @inject(Modules.Logger) private readonly loggerService: Logger, @inject(Modules.AuthGuard) private readonly authGuard: AuthGuard) {
     super(loggerService);
   }
 
   create: ControllerHandler = async (req, res) => {
     const { body, user } = req;
-    this.loggerService.requestInfo(req, { body, user }, MODULE_NAME);
+    this.loggerService.requestInfo(req, { body, user }, this.moduleName);
     const category = await this.categoriesService.create(user.id, body as CreateCategoryDto);
     const response = { user, category };
     res.status(201).json(response);
-    this.loggerService.responseInfo(req, response, MODULE_NAME);
+    this.loggerService.responseInfo(req, response, this.moduleName);
   };
 
   getAll: ControllerHandler = async (req, res) => {
     const { user } = req;
-    this.loggerService.requestInfo(req, user, MODULE_NAME);
+    this.loggerService.requestInfo(req, user, this.moduleName);
     const categories = await this.categoriesService.getAll(user.id);
     const response = { user, categories };
     res.json(response);
-    this.loggerService.responseInfo(req, response, MODULE_NAME);
+    this.loggerService.responseInfo(req, response, this.moduleName);
   };
 
   getRoutes (): Route[] {
