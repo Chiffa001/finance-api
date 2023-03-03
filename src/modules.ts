@@ -10,5 +10,7 @@ export const Modules = {
   UsersController: Symbol.for('UsersController'),
   AuthGuard: Symbol.for('AuthGuard'),
   CategoriesService: Symbol.for('CategoriesService'),
-  CategoriesController: Symbol.for('CategoriesController')
+  CategoriesController: Symbol.for('CategoriesController'),
+  OperationsController: Symbol.for('OperationsController'),
+  OperationsService: Symbol.for('OperationsService')
 };
