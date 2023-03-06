@@ -13,7 +13,6 @@ import { ControllerHandler, Route } from '~/types/route';
 import 'reflect-metadata';
 
 enum RoutePath {
-  INFO = '/accountInfo',
   GET_ALL_ACCOUNTS = '/getAllAccounts',
   CREATE_ACCOUNT = '/createAccount'
 }
@@ -27,14 +26,6 @@ export class AccountController extends BaseController {
     @inject(Modules.AuthGuard) private readonly authGuard: AuthGuard) {
     super(loggerService);
   }
-
-  getInfo: ControllerHandler = (req, res) => {
-    const info = this.accountService.getInfo();
-    this.loggerService.requestInfo(req, req.params, this.moduleName);
-    const response = { info };
-    res.json(response);
-    this.loggerService.responseInfo(req, response, this.moduleName);
-  };
 
   getAllAccounts: ControllerHandler = async (req, res) => {
     const { user } = req;
@@ -56,7 +47,6 @@ export class AccountController extends BaseController {
 
   getRoutes (): Route[] {
     return [
-      { method: 'get', path: RoutePath.INFO, cb: this.getInfo },
       { method: 'get', path: RoutePath.GET_ALL_ACCOUNTS, cb: this.getAllAccounts, middleware: [this.authGuard] },
       { method: 'post', path: RoutePath.CREATE_ACCOUNT, cb: this.createAccount, middleware: [new ValidateMiddleware(CreateAccountDto), this.authGuard] }
     ];
