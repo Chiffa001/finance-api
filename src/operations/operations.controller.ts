@@ -11,27 +11,38 @@ import { Logger } from '~/types/logger';
 import { ControllerHandler, Route } from '~/types/route';
 
 enum RoutePath {
-  ADD = '/add'
+  ADD = '/add',
+  GET_OPERATIONS_LIST = '/get-operations-list'
 }
 
 @injectable()
 export class OperationsController extends BaseController {
   readonly moduleName = 'OperationsController';
-  constructor (@inject(Modules.Logger) private readonly loggersService: Logger, @inject(Modules.OperationsService) private readonly operationService: OperationsService, @inject(Modules.AuthGuard) private readonly authGuard: AuthGuard) {
-    super(loggersService);
+  constructor (@inject(Modules.Logger) private readonly loggerService: Logger, @inject(Modules.OperationsService) private readonly operationService: OperationsService, @inject(Modules.AuthGuard) private readonly authGuard: AuthGuard) {
+    super(loggerService);
   }
+
+  getOperationsList: ControllerHandler = async (req, res) => {
+    const { query, user } = req;
+    const info = await this.operationService.getOperationsByAccountId(Number(query.accountId));
+    this.loggerService.requestInfo(req, query, this.moduleName);
+    const response = { info, user };
+    res.json(response);
+    this.loggerService.responseInfo(req, response, this.moduleName);
+  };
 
   add: ControllerHandler = async (req, res) => {
     const { user, body } = req;
-    this.loggersService.requestInfo(req, { user, body }, this.moduleName);
+    this.loggerService.requestInfo(req, { user, body }, this.moduleName);
     const operation = await this.operationService.add(body as AddOperationDto);
     const response = { user, operation };
-    this.loggersService.responseInfo(req, response, this.moduleName);
+    this.loggerService.responseInfo(req, response, this.moduleName);
     res.status(201).json(response);
   };
 
   getRoutes (): Route[] {
     return [
+      { method: 'get', path: RoutePath.GET_OPERATIONS_LIST, cb: this.getOperationsList, middleware: [this.authGuard] },
       { method: 'post', path: RoutePath.ADD, cb: this.add, middleware: [new ValidateMiddleware(AddOperationDto), this.authGuard] }
     ];
   }
