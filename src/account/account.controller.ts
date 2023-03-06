@@ -28,10 +28,11 @@ export class AccountController extends BaseController {
     super(loggerService);
   }
 
-  getInfo: ControllerHandler = (req, res) => {
-    const info = this.accountService.getInfo();
-    this.loggerService.requestInfo(req, req.params, this.moduleName);
-    const response = { info };
+  getInfo: ControllerHandler = async (req, res) => {
+    const { query, user } = req;
+    const info = await this.accountService.getInfo(Number(query.accountId));
+    this.loggerService.requestInfo(req, query, this.moduleName);
+    const response = { info, user };
     res.json(response);
     this.loggerService.responseInfo(req, response, this.moduleName);
   };
@@ -56,7 +57,7 @@ export class AccountController extends BaseController {
 
   getRoutes (): Route[] {
     return [
-      { method: 'get', path: RoutePath.INFO, cb: this.getInfo },
+      { method: 'get', path: RoutePath.INFO, cb: this.getInfo, middleware: [this.authGuard] },
       { method: 'get', path: RoutePath.GET_ALL_ACCOUNTS, cb: this.getAllAccounts, middleware: [this.authGuard] },
       { method: 'post', path: RoutePath.CREATE_ACCOUNT, cb: this.createAccount, middleware: [new ValidateMiddleware(CreateAccountDto), this.authGuard] }
     ];

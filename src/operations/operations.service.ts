@@ -13,12 +13,10 @@ export class OperationsService {
   readonly moduleName = 'OperationsService';
   constructor (@inject(Modules.Logger) private readonly logger: Logger, @inject(Modules.PrismaService) private readonly prismaService: PrismaService, @inject(Modules.CommentsService) private readonly commentsService: CommentsService) {}
 
-  async add ({ accountId, categoryId, sum, operationType, text }: AddOperationDto) {
-    const operation = new OperationEntity(sum, accountId, categoryId, operationType);
-
+  async getLastOperation (accountId: number) {
     const lastOperation = await this.prismaService.client.operationModel.findFirst({
       where: {
-        accountModelId: operation.accountId
+        accountModelId: accountId
       },
       orderBy: {
         createdAt: 'asc'
@@ -27,6 +25,38 @@ export class OperationsService {
     });
 
     this.logger.info(`[${this.moduleName}] lastOperation: ${JSON.stringify(lastOperation)}`);
+
+    return lastOperation;
+  }
+
+  async getOperationsByAccountId (accountId: number, take = 10, skip = 0) {
+    const [total, operations] = await this.prismaService.client.$transaction([
+      this.prismaService.client.operationModel.count({ where: { accountModelId: accountId } }),
+      this.prismaService.client.operationModel.findMany({
+        where: { accountModelId: accountId },
+        take,
+        skip,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          comment: true
+        }
+      })
+    ]);
+
+    const result = { total: total ?? 0, operations };
+
+    this.logger.info(`[${this.moduleName}] [getOperationsByAccountId]: ${JSON.stringify({
+      args: { accountId, take, skip },
+      result
+    })}`);
+
+    return result;
+  }
+
+  async add ({ accountId, categoryId, sum, operationType, text }: AddOperationDto) {
+    const operation = new OperationEntity(sum, accountId, categoryId, operationType);
+
+    const lastOperation = await this.getLastOperation(operation.accountId);
 
     operation.setBalance(lastOperation?.balance ?? 0);
 
