@@ -15,6 +15,11 @@ export class AccountService {
     const accounts = await this.prismaService.client.accountModel.findMany({
       where: {
         userModelId: userId
+      },
+      select: {
+        id: true,
+        name: true,
+        currency: true
       }
     });
 
