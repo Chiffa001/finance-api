@@ -37,8 +37,23 @@ export class OperationsService {
         take,
         skip,
         orderBy: { createdAt: 'desc' },
-        include: {
-          comment: true
+        select: {
+          id: true,
+          balance: true,
+          sum: true,
+          createdAt: true,
+          type: true,
+          account: {
+            select: {
+              id: true,
+              currency: true
+            }
+          },
+          comment: {
+            select: {
+              text: true
+            }
+          }
         }
       })
     ]);
