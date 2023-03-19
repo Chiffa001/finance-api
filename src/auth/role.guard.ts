@@ -5,13 +5,12 @@ import { Guard } from '~/common/guard';
 import { Modules } from '~/modules';
 import { Logger } from '~/types/logger';
 import { Middleware } from '~/types/middleware';
-import { UsersService } from '~/users';
 import 'reflect-metadata';
 
 @injectable()
-export class AuthGuard extends Guard implements Middleware {
-  moduleName = 'AuthGuard';
-  constructor (@inject(Modules.UsersService) private readonly usersService: UsersService, @inject(Modules.Logger) private readonly loggerService: Logger) {
+export class RoleGuard extends Guard implements Middleware {
+  moduleName = 'RoleGuard';
+  constructor (@inject(Modules.Logger) private readonly loggerService: Logger) {
     super(loggerService);
   }
 
@@ -23,11 +22,9 @@ export class AuthGuard extends Guard implements Middleware {
       return;
     }
 
-    const { email } = req.user;
+    const { role } = req.user;
 
-    const isUserExist = await this.usersService.isUserExist(email);
-
-    if (!isUserExist) {
+    if (!(role === 'ADMIN')) {
       this.forbidden(req, res);
       return;
     }

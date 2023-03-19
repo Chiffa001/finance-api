@@ -21,12 +21,13 @@ model UserModel {
 }
 
 model AccountModel {
-  id             Int              @id @default(autoincrement())
-  name           String
-  currency       String
-  UserModel      UserModel        @relation(fields: [userModelId], references: [id])
-  userModelId    Int
-  OperationModel OperationModel[]
+  id              Int              @id @default(autoincrement())
+  name            String
+  currency        CurrencyModel    @relation(fields: [currencyModelId], references: [id])
+  UserModel       UserModel        @relation(fields: [userModelId], references: [id])
+  userModelId     Int
+  OperationModel  OperationModel[]
+  currencyModelId Int
 }
 
 model CategoryModel {
@@ -57,9 +58,16 @@ model CommentModel {
   OperationModel OperationModel[]
 }
 
+model CurrencyModel {
+  id           Int            @id @default(autoincrement())
+  code         String         @unique
+  AccountModel AccountModel[]
+}
+
 enum OperationType {
   INCOME
   EXPENSE
+  TRANSFER
 }
 
 enum Role {

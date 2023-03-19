@@ -9,6 +9,7 @@ import { CategoriesController } from '~/categories';
 import { ClientError } from '~/client-error';
 import { AuthMiddleware } from '~/common/auth.middleware';
 import { ConfigService } from '~/config';
+import { CurrencyController } from '~/currency';
 import { PrismaService } from '~/database';
 import { Modules } from '~/modules';
 import { OperationsController } from '~/operations';
@@ -30,7 +31,8 @@ export class App {
     @inject(Modules.UsersController) private readonly usersController: UsersController,
     @inject(Modules.ConfigService) private readonly configService: ConfigService,
     @inject(Modules.CategoriesController) private readonly categoriesController: CategoriesController,
-    @inject(Modules.OperationsController) private readonly operationsController: OperationsController
+    @inject(Modules.OperationsController) private readonly operationsController: OperationsController,
+    @inject(Modules.CurrencyController) private readonly currencyController: CurrencyController
   ) {
     this.app = express();
   }
@@ -44,6 +46,7 @@ export class App {
     this.app.use(RouteBasePath.USERS, this.usersController.router);
     this.app.use(RouteBasePath.CATEGORY, this.categoriesController.router);
     this.app.use(RouteBasePath.OPERATION, this.operationsController.router);
+    this.app.use(RouteBasePath.CURRENCY, this.currencyController.router);
   }
 
   useMiddleware () {
