@@ -33,12 +33,12 @@ export class AccountService {
     }));
   }
 
-  async createAccount (userId: number, { name, currency }: CreateAccountDto) {
+  async createAccount (userId: number, { name, currencyId }: CreateAccountDto) {
     return this.prismaService.client.accountModel.create({
       data: {
         userModelId: userId,
         name,
-        currency
+        currencyModelId: currencyId
       }
     });
   }
