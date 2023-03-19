@@ -6,7 +6,8 @@ export enum RouteBasePath {
   ACCOUNT = '/account',
   USERS = '/users',
   CATEGORY = '/category',
-  OPERATION = '/operation'
+  OPERATION = '/operation',
+  CURRENCY = '/currency'
 }
 
 export type ControllerHandler = (req: Request, res: Response, next: NextFunction) => Promise<void> | void;

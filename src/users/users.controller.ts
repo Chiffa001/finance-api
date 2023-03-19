@@ -36,7 +36,7 @@ export class UsersController extends BaseController {
       email: registeredUser.email,
       name: registeredUser.name
     };
-    res.status(201).json({ response });
+    res.status(201).json(response);
     this.loggerService.responseInfo(req, response, this.moduleName);
   };
 

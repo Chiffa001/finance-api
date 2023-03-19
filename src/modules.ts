@@ -13,5 +13,8 @@ export const Modules = {
   CategoriesController: Symbol.for('CategoriesController'),
   OperationsController: Symbol.for('OperationsController'),
   OperationsService: Symbol.for('OperationsService'),
-  CommentsService: Symbol.for('CommentsService')
+  CommentsService: Symbol.for('CommentsService'),
+  CurrencyController: Symbol.for('CurrencyController'),
+  CurrencyService: Symbol.for('CurrencyService'),
+  RoleGuard: Symbol.for('RoleGuard')
 };
