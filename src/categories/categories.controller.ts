@@ -1,3 +1,4 @@
+import { CategoryType } from '@prisma/client';
 import { inject, injectable } from 'inversify';
 
 import { CategoriesService } from './categories.service';
@@ -32,9 +33,9 @@ export class CategoriesController extends BaseController {
   };
 
   getAll: ControllerHandler = async (req, res) => {
-    const { user } = req;
+    const { user, query } = req;
     this.loggerService.requestInfo(req, user, this.moduleName);
-    const categories = await this.categoriesService.getAll(user.id);
+    const categories = await this.categoriesService.getAll(user.id, query?.type as CategoryType);
     const response = { user, categories };
     res.json(response);
     this.loggerService.responseInfo(req, response, this.moduleName);
