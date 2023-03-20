@@ -36,6 +36,7 @@ model CategoryModel {
   UserModel      UserModel        @relation(fields: [userModelId], references: [id])
   userModelId    Int
   OperationModel OperationModel[]
+  type           CategoryType     @default(EXPENSE)
 }
 
 model OperationModel {
@@ -62,6 +63,11 @@ model CurrencyModel {
   id           Int            @id @default(autoincrement())
   code         String         @unique
   AccountModel AccountModel[]
+}
+
+enum CategoryType {
+  INCOME
+  EXPENSE
 }
 
 enum OperationType {

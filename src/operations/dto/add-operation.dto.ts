@@ -1,5 +1,5 @@
 import { OperationType } from '@prisma/client';
-import { IsNumber, IsPositive } from 'class-validator';
+import { IsNumber, IsPositive, IsOptional, IsEnum, IsString } from 'class-validator';
 
 export class AddOperationDto {
   @IsPositive()
@@ -12,7 +12,11 @@ export class AddOperationDto {
   @IsNumber()
     accountId: number;
 
-  operationType?: OperationType;
+  @IsEnum(OperationType)
+  @IsOptional()
+    operationType?: OperationType;
 
-  text?: string;
+  @IsString()
+  @IsOptional()
+    text?: string;
 }
