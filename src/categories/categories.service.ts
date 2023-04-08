@@ -18,7 +18,12 @@ export class CategoriesService {
   };
 
   async getAll (userId: number, type: CategoryType = 'EXPENSE') {
-    const categories = await this.prismaService.client.categoryModel.findMany({ where: { userModelId: userId, type } });
+    const categories = await this.prismaService.client.categoryModel.findMany({
+      where: { userModelId: userId, type },
+      select: {
+        id: true, name: true, type: true
+      }
+    });
     this.logger.info(`[CategoriesService] all categories: ${JSON.stringify(categories)}`);
     return categories;
   }
