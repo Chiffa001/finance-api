@@ -11,9 +11,9 @@ import { PrismaService } from '~/database';
 import { Modules } from '~/modules';
 import { Config } from '~/types/config';
 import { Logger } from '~/types/logger';
-import { User } from '~/types/user';
-
 import 'reflect-metadata';
+import { User } from '~/types/user';
+import { checkToken } from '~/utils/token';
 
 @injectable()
 export class UsersService implements User {
@@ -68,5 +68,14 @@ export class UsersService implements User {
     const isUserExist = !!(await this.prismaService.client.userModel.findFirst({ where: { email } }));
     this.logger.info(`[${this.moduleName}] isUserExist: ${JSON.stringify({ email, isUserExist })}`);
     return isUserExist;
+  };
+
+  isValidToken = async (token: string) => {
+    const [, t] = token.split(' ') as [string, string];
+    const { email } = await checkToken(t, this.configService.get('SECRET')) as Omit<UserModel, 'password' | 'name'>;
+    const isUserExist = await this.isUserExist(email);
+
+    this.logger.info(`[${this.moduleName}] isValidToken: ${JSON.stringify({ email, isUserExist, token })}`);
+    return Boolean(isUserExist);
   };
 }

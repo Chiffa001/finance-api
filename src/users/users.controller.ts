@@ -14,7 +14,8 @@ import 'reflect-metadata';
 
 enum RoutePath {
   REGISTER = '/register',
-  LOGIN = '/login'
+  LOGIN = '/login',
+  CHECK = '/check'
 }
 
 @injectable()
@@ -54,10 +55,24 @@ export class UsersController extends BaseController {
     res.status(200).json(response);
   };
 
+  isValidToken: ControllerHandler = async (req, res) => {
+    this.loggerService.requestInfo(req, req.body, this.moduleName);
+    const token = req.headers.authorization;
+
+    if (!token) {
+      res.status(400).json({ error: 'Токен не был передан' });
+      return;
+    }
+    const isValid = await this.usersService.isValidToken(token);
+
+    res.status(200).json({ isValid });
+  };
+
   getRoutes (): Route[] {
     return [
       { method: 'post', path: RoutePath.REGISTER, cb: this.register, middleware: [new ValidateMiddleware(RegisterUserDto)] },
-      { method: 'post', path: RoutePath.LOGIN, cb: this.login, middleware: [new ValidateMiddleware(LoginUserDto)] }
+      { method: 'post', path: RoutePath.LOGIN, cb: this.login, middleware: [new ValidateMiddleware(LoginUserDto)] },
+      { method: 'get', path: RoutePath.CHECK, cb: this.isValidToken }
     ];
   }
 }
