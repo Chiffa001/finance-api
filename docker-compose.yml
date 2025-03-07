@@ -13,9 +13,21 @@ services:
             - postgres_data:/var/lib/postgresql/data
         networks:
             - providers-api
+    redis:
+        container_name: redis
+        image: redis:latest
+        restart: always
+        ports:
+            - 6379:6379
+        command: redis-server --requirepass ${REDIS_PASSWORD}
+        volumes:
+            - redis_data:/data
+        networks:
+            - providers-api
 
 volumes:
     postgres_data:
+    redis_data:
 
 networks:
     providers-api:
